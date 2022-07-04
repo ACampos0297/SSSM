@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from Products import Shares, Index
 
 class Market:
     def __init__(self, products):
@@ -76,9 +75,9 @@ class Market:
     def view_product_list(self):
         for product in self.brokerage_products.values():
             print(f'Symbol: {product.symbol}\tValue: ${round(product.value,3)}\t', end=' ')
-            if isinstance(product, Shares):
+            if str(type(product)).find('Shares') != -1:
                 print(f'Last Dividend: ${product.last_dividend}\tFixed Dividend: ${product.fixed_dividend}\tType: {product.type}')
-            if isinstance(product, Index):
+            if str(type(product)).find('Index') != -1:
                 print(f'Non Tradeable Index \tComposition: {list(x.symbol for x in product.composition)}')
 
     def get_products(self):

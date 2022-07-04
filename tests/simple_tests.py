@@ -40,8 +40,8 @@ class TestMarket(unittest.TestCase):
         self.assertEqual(round(self.test_market.calculate_price_earning_ratio('GIN', 0.6),3), 7.500)
 
     def test_market_transact(self):
-        self.assertIn(self.test_market.transact('TEA', 5, 'B'),self.test_market.transaction_log)
-        self.assertIn(self.test_market.transact('ALE', 3.5, 'B'),self.test_market.transaction_log)
-        self.assertIn(self.test_market.transact('JOE', 2.1, 'B'),self.test_market.transaction_log)
-        self.assertIn(self.test_market.transact('JOE', 0.1, 'B'),self.test_market.transaction_log)
+        self.assertIn(self.test_market.transact('TEA', 5, 'B')['transaction_id'],self.test_market.transaction_log)
+        self.assertIn(self.test_market.transact('ALE', 3.5, 'B')['transaction_id'],self.test_market.transaction_log)
+        self.assertIn(self.test_market.transact('JOE', 2.1, 'B')['transaction_id'],self.test_market.transaction_log)
+        self.assertIn(self.test_market.transact('JOE', 0.1, 'B')['transaction_id'],self.test_market.transaction_log)
 
