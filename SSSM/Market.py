@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from Products import Shares, Index
 
 class Market:
     def __init__(self, products):
@@ -9,6 +10,9 @@ class Market:
             self.brokerage_products[entry.symbol] = entry
 
     def transact(self, symbol, quantity, transaction_type):
+        if not self.brokerage_products[symbol].tradeable:
+            return -1
+
         par_val = self.brokerage_products[symbol].value
         price = quantity * par_val
         timestamp = datetime.now() 
@@ -20,10 +24,11 @@ class Market:
                 'price': price
         }
 
-        return transaction_id
+        return {'transaction_id':transaction_id, 'price':price}
+
 
     def calculate_dividend_yield(self, symbol, price):
-        #   Calculate dividend yield using provided formula depending on share type "Common"/"Preferred"
+        #   Calculate dividend yield using provided formula depending on share type 'Common'/'Preferred'
         type = self.brokerage_products[symbol].type 
         dividend = 0
         
@@ -68,6 +73,18 @@ class Market:
         log_entry_ids = sorted(self.transaction_log.keys(), key= lambda x: x[0])    
         for log_entry in log_entry_ids:
             transaction = self.transaction_log[log_entry] 
-            print(f'''{log_entry[0].strftime("%Y-%m-%d %H:%M:%S")}: {log_entry[1]} {transaction['transaction_type']} total ${transaction['price']} for {transaction['quantity']} at ${transaction['value']} ''')
+            print(f'''{log_entry[0].strftime('%Y-%m-%d %H:%M:%S')}: {log_entry[1]} {transaction['transaction_type']} total ${transaction['price']} for {transaction['quantity']} at ${transaction['value']} ''')
 
+    def view_product_list(self):
+        for product in self.brokerage_products.values():
+            print(f'Symbol: {product.symbol}\tValue: ${round(product.value,4)}\t', end=' ')
+            if isinstance(product, Shares):
+                print(f'Last Dividend: ${product.last_dividend}\tFixed Dividend: ${product.fixed_dividend}\tType: {product.type}')
+            if isinstance(product, Index):
+                print(f'Non Tradeable Index \tComposition: {list(x.symbol for x in product.composition)}')
 
+    def get_products(self):
+        return list(self.brokerage_products.keys())
+
+    def get_value(self, symbol):
+        return self.brokerage_products[symbol].value

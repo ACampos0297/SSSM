@@ -27,12 +27,6 @@ class TestMarket(unittest.TestCase):
         self.test_index = Index('GBCE', self.test_shares)
         self.test_market = Market(self.test_shares + [self.test_index])
 
-    def test_market_constructor(self):
-        self.assertIsNotNone(self.test_market)
-        self.assertIn(self.test_shares[0].symbol, self.test_market.brokerage_products)
-        self.assertIn(self.test_index.symbol, self.test_market.brokerage_products)
-        self.assertEqual(len(self.test_shares)+1, len(self.test_market.brokerage_products.keys()))
-
     def test_market_calculate_dividend_yield(self):
         self.assertEqual(round(self.test_market.calculate_dividend_yield('POP', 0.9),4), 0.0889)
         self.assertEqual(round(self.test_market.calculate_dividend_yield('GIN', 0.8),4), 0.0250)
