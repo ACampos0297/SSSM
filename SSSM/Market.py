@@ -10,9 +10,6 @@ class Market:
             self.brokerage_products[entry.symbol] = entry
 
     def transact(self, symbol, quantity, transaction_type):
-        if not self.brokerage_products[symbol].tradeable:
-            return -1
-
         par_val = self.brokerage_products[symbol].value
         price = quantity * par_val
         timestamp = datetime.now() 
@@ -73,11 +70,12 @@ class Market:
         log_entry_ids = sorted(self.transaction_log.keys(), key= lambda x: x[0])    
         for log_entry in log_entry_ids:
             transaction = self.transaction_log[log_entry] 
-            print(f'''{log_entry[0].strftime('%Y-%m-%d %H:%M:%S')}: {log_entry[1]} {transaction['transaction_type']} total ${transaction['price']} for {transaction['quantity']} at ${transaction['value']} ''')
+            print(f'{log_entry[0].strftime("%Y-%m-%d %H:%M:%S")}: {"buy" if transaction["transaction_type"]=="B" else "sell"}', end=' ') 
+            print(f'total ${transaction["price"]} for {transaction["quantity"]} shares of {log_entry[1]} at ${transaction["value"]}')
 
     def view_product_list(self):
         for product in self.brokerage_products.values():
-            print(f'Symbol: {product.symbol}\tValue: ${round(product.value,4)}\t', end=' ')
+            print(f'Symbol: {product.symbol}\tValue: ${round(product.value,3)}\t', end=' ')
             if isinstance(product, Shares):
                 print(f'Last Dividend: ${product.last_dividend}\tFixed Dividend: ${product.fixed_dividend}\tType: {product.type}')
             if isinstance(product, Index):
@@ -88,3 +86,10 @@ class Market:
 
     def get_value(self, symbol):
         return self.brokerage_products[symbol].value
+
+    def check_tradeable(self, symbol):
+        if self.brokerage_products[symbol].tradeable:
+            return True 
+        else:
+            return False
+
